@@ -1,7 +1,7 @@
 # Virtual Day Planner
 This color coated day planner will help to organize your day! The green hours are future time, the gray hours are past time, and the red hour is the current time!
 
-This site can be activated by going to the [GitHub deployed site](https://mmarsolek.github.io/DayPlanner/) or by right clicking in the [index.html](./Develop/index.html) page and selecting "Open in default browser". 
+This site can be activated by going to the [GitHub deployed site](https://mmarsolek.github.io/DayPlanner/) or by right clicking in the [index.html](./index.html) page and selecting "Open in default browser". 
 
 ## Considerations
 - All updates to the day planner are stored in local storage once the save button is hit.
