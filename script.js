@@ -46,6 +46,8 @@ function startUp() {
     
         saveButton.click(updateLocalStorage);
     }
+    updateTextDisplay();
+
 }
 
 
@@ -63,7 +65,11 @@ function updateLocalStorage(event) {
 function updateTextDisplay(){
     var newNumOfHours = startTime;
     var newStartTime = startTime;
-    var curObj = JSON.parse(localStorage.getItem('noteObj'));
+    var curObj;
+    if(localStorage.getItem('noteObj')){   
+        curObj = JSON.parse(localStorage.getItem('noteObj'));
+    } else curObj = noteObj;
+    
     for(var i = 0; i < newNumOfHours; i++){
         if(!curObj['textObj'][i+newStartTime]){
             $('#'+ idTypeInput + [i+newStartTime] ).val("");
