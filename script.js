@@ -54,9 +54,7 @@ function startUp() {
 //Adds the textarea value to the local storage on save
 function updateLocalStorage(event) {
     let text = $('#'+ idTypeInput + event.target.id ).val();
-    console.log(text);
     noteObj['textObj'][event.target.id] = text;
-    console.log('Button ' + event.target.id + " was clicked");
     localStorage.setItem('noteObj', JSON.stringify(noteObj));
     updateTextDisplay();
 }
