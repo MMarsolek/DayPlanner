@@ -3,10 +3,6 @@ var timeContainer = $('.container');
 const idTypeInput = 'input-';
 
 
-var noteObj = {
-    textObj: {}
-};
-
 //The following variables allow for more customization. They allow you to update the length of the calendar day and the start time.
 var numOfHours = 8;
 var startTime = 9;
@@ -53,6 +49,14 @@ function startUp() {
 
 //Adds the textarea value to the local storage on save
 function updateLocalStorage(event) {
+    var noteObj;
+    if(localStorage.getItem('noteObj')){   
+        noteObj = JSON.parse(localStorage.getItem('noteObj'));
+    } else{ 
+        noteObj = {
+            textObj: {}
+        };
+    }
     let text = $('#'+ idTypeInput + event.target.id ).val();
     noteObj['textObj'][event.target.id] = text;
     localStorage.setItem('noteObj', JSON.stringify(noteObj));
@@ -66,7 +70,11 @@ function updateTextDisplay(){
     var curObj;
     if(localStorage.getItem('noteObj')){   
         curObj = JSON.parse(localStorage.getItem('noteObj'));
-    } else curObj = noteObj;
+    } else{ 
+        curObj = {
+            textObj: {}
+        };
+    }
     
     for(var i = 0; i < newNumOfHours; i++){
         if(!curObj['textObj'][i+newStartTime]){
