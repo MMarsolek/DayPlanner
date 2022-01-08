@@ -1,46 +1,108 @@
 $('#currentDay').text(moment().format('LL'));
-var timeContainer = document.querySelector('.container')
+var timeContainer = $('.container');
+const idTypeInput = 'input-';
+
+
+var noteObj = {
+    textObj: {}
+};
 
 //The following variables allow for more customization. They allow you to update the length of the calendar day and the start time.
 var numOfHours = 8;
 var startTime = 9;
 
+//Creates the base layout for the day planner.
+function startUp() {
+    var newNumOfHours = startTime;
+    var newStartTime = startTime;
 
-for (var i =0; i<numOfHours;i++) {
-    var timeBlock  = document.createElement('section');
-    timeBlock.classList.add('timeBlock');
+    //Iterates through the list to create a flexible number of hours that can easily be changed.
+    for (var i =0; i<newNumOfHours;i++) {
 
-    var curTime = document.createElement('label');
-    curTime.textContent = startTime;
-    startTime++;
-
-    var userInput = document.createElement('textarea');
-    userInput.setAttribute("type", "text");
-    userInput.setAttribute('columns', '5000');
-    userInput.setAttribute('rows', '5%');
-    if(localStorage.getItem(curTime.textContent)) {
-        userInput.val(localStorage.getItem(curTime.textContent));
-    }
-
-
-
-
-    var saveButton = document.createElement('button');
-    saveButton.classList.add('saveBtn', 'ui-button-icon-only', 'far', 'fa-save');
+        var timeBlock = $('<section/>');
+        timeContainer.append(timeBlock);
+        timeBlock.addClass('timeBlock');
     
-    timeBlock.appendChild(curTime);
-    timeBlock.appendChild(userInput);
-    timeBlock.appendChild(saveButton);
+        var curTime = ($('<label/>'));
+        curTime.append(moment(newStartTime, "h").format("h a"));
+        
+        let userInput = ($('<textarea/>'))
+        userInput.attr("type", "text");
+        userInput.attr('id', idTypeInput + newStartTime);
+        userInput.val('');
 
-    timeContainer.appendChild(timeBlock);
+        let saveButton = ($('<button/>'));
+        saveButton.addClass('saveBtn far fa-save');
+        saveButton.attr('id', newStartTime);
+    
+        timeBlock.append(curTime);
+        timeBlock.append(userInput);
+        timeBlock.append(saveButton);
 
-
-    saveButton.addEventListener('click', function() {
-        console.log(curTime.textContent);
-        console.log(userInput.value);
-        var text = userInput.value;
-        localStorage.setItem(curTime.textContent, text);
-    });
+        newStartTime++;
+        if(newStartTime == 23){
+            newStartTime = 0;
+        }
+    
+        saveButton.click(updateLocalStorage);
+    }
 }
 
 
+//Adds the textarea value to the local storage on save
+function updateLocalStorage(event) {
+    let text = $('#'+ idTypeInput + event.target.id ).val();
+    console.log(text);
+    noteObj['textObj'][event.target.id] = text;
+    console.log('Button ' + event.target.id + " was clicked");
+    localStorage.setItem('noteObj', JSON.stringify(noteObj));
+    updateTextDisplay();
+}
+
+//Updates the current textareas one loading and saving
+function updateTextDisplay(){
+    var newNumOfHours = startTime;
+    var newStartTime = startTime;
+    var curObj = JSON.parse(localStorage.getItem('noteObj'));
+    for(var i = 0; i < newNumOfHours; i++){
+        if(!curObj['textObj'][i+newStartTime]){
+            $('#'+ idTypeInput + [i+newStartTime] ).val("");
+        } else {
+            
+            $('#'+ idTypeInput + [i+newStartTime] ).val(curObj['textObj'][i+newStartTime]);
+        }
+        startTime++;
+        if(newStartTime == 23){
+            newStartTime = 0;
+        }
+        updateColor([i+newStartTime]);
+
+    }
+}
+
+
+//On loading and updating the site, it will add and remove classes to match the colors needed based on the current time. 
+function updateColor(hour) {
+    var curHour = moment().hours();
+    if (hour - curHour > 0) {
+        $('#' + idTypeInput + hour).addClass('future');
+        $('#' + idTypeInput + hour).removeClass('past');
+        $('#' + idTypeInput + hour).removeClass('present');
+    }else if (hour - curHour <0) {
+        $('#' + idTypeInput + hour).addClass('past');
+        $('#' + idTypeInput + hour).removeClass('future');
+        $('#' + idTypeInput + hour).removeClass('present');
+    }else{
+        $('#' + idTypeInput + hour).addClass('present');
+        $('#' + idTypeInput + hour).removeClass('past');
+        $('#' + idTypeInput + hour).removeClass('future');
+
+    }
+}
+
+function main() {
+    startUp();
+    updateTextDisplay();
+}
+
+main();
